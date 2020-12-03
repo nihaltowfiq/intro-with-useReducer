@@ -6,7 +6,12 @@ const PatientManagement = () => {
   const [state, dispatch] = useReducer(patientReducer, patientState);
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(nameRef.current.value);
+    dispatch({
+      type: "ADD_PATIENT",
+      id: state.patients.length + 1,
+      name: nameRef.current.value,
+    });
+    nameRef.current.value = "";
   };
 
   return (
@@ -14,10 +19,21 @@ const PatientManagement = () => {
       <h1>Patient Management: {state.patients.length}</h1>
       <form onSubmit={handleSubmit}>
         <input ref={nameRef} type="text" required /> <br />
-        <button type="submit" className="btn btn-primary mt-2">
+        <button type="submit" className="btn btn-primary my-2">
           Submit
         </button>
       </form>
+      {state.patients.map((pt) => (
+        <li key={pt.id} className="list-group-item">
+          ID: {pt.id}, Name: {pt.name}{" "}
+          <button
+            onClick={() => dispatch({ type: "REMOVE_PATIENT", id: pt.id })}
+            className="ml-3 btn btn-danger"
+          >
+            X
+          </button>
+        </li>
+      ))}
     </div>
   );
 };
